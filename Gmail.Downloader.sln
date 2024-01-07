@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gmail.Downloader", "src\Gmail.Downloader\Gmail.Downloader.csproj", "{AE9D15A8-308E-4707-BB31-991D1710EA87}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gmail.Downloader.Lib", "src\Gmail.Downloader.Lib\Gmail.Downloader.Lib.csproj", "{4E48B482-1028-4E18-89A2-A83D4C35E429}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AE9D15A8-308E-4707-BB31-991D1710EA87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE9D15A8-308E-4707-BB31-991D1710EA87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE9D15A8-308E-4707-BB31-991D1710EA87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE9D15A8-308E-4707-BB31-991D1710EA87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E48B482-1028-4E18-89A2-A83D4C35E429}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E48B482-1028-4E18-89A2-A83D4C35E429}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E48B482-1028-4E18-89A2-A83D4C35E429}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E48B482-1028-4E18-89A2-A83D4C35E429}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C54E4DFF-3D07-45C1-A89C-C41518CA64DC}
+	EndGlobalSection
+EndGlobal
