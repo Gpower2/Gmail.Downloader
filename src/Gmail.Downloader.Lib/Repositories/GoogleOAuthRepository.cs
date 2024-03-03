@@ -7,11 +7,13 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using Gmail.Downloader.Lib.Extensions;
+using Gmail.Downloader.Lib.Services;
 using Microsoft.Extensions.Logging;
 
-namespace Gmail.Downloader.Lib.Services
+namespace Gmail.Downloader.Lib.Repositories
 {
-    public class GoogleOAuthService
+    public class GoogleOAuthRepository
     {
         const string AuthorizationEndpoint = "https://accounts.google.com/o/oauth2/v2/auth";
         const string responseString = "<html><head><meta http-equiv='refresh' content='10;url=https://google.com'></head><body>Please return to the app.</body></html>";
@@ -26,9 +28,9 @@ namespace Gmail.Downloader.Lib.Services
             BaseAddress = new Uri(tokenRequestUri)
         };
 
-        private readonly ILogger<GoogleOAuthService> _logger;
+        private readonly ILogger<GoogleOAuthRepository> _logger;
 
-        public GoogleOAuthService(ILogger<GoogleOAuthService> logger)
+        public GoogleOAuthRepository(ILogger<GoogleOAuthRepository> logger)
         {
             ArgumentNullException.ThrowIfNull(_logger = logger);
         }
@@ -38,7 +40,7 @@ namespace Gmail.Downloader.Lib.Services
             // Generates state and PKCE values.
             string state = Base64Service.GenerateRandomDataBase64url(32);
             string codeVerifier = Base64Service.GenerateRandomDataBase64url(32);
-            string codeChallenge = Base64Service.EncodeBase64UrlWithNoPadding(CryptographyService.GetSha256BytesFromAsciiText(codeVerifier));
+            string codeChallenge = Base64Service.EncodeBase64UrlWithNoPadding(CryptographyExtensions.GetSha256BytesFromAsciiText(codeVerifier));
 
             // Creates an HttpListener to listen for requests on
             // a redirect URI using an available port on the loopback address            
@@ -53,7 +55,7 @@ namespace Gmail.Downloader.Lib.Services
             // Determines whether the Google OAuth 2.0 endpoint returns an authorization code.
             // Set the parameter value to code for web server applications.
             queryValues.Add("response_type", "code");
-            
+
             // A space-delimited list of scopes that identify the resources that your application could access on the user's behalf.
             // These values inform the consent screen that Google displays to the user.
             queryValues.Add("scope", $"openid%20profile {gmailReadonlyScope}");
@@ -92,7 +94,7 @@ namespace Gmail.Downloader.Lib.Services
 
             // Sends an HTTP response to the browser.
             using var response = context.Response;
-            
+
             byte[] buffer = Encoding.UTF8.GetBytes(responseString);
             response.ContentLength64 = buffer.Length;
             var responseOutput = response.OutputStream;
@@ -159,7 +161,7 @@ namespace Gmail.Downloader.Lib.Services
             response.EnsureSuccessStatusCode();
 
             string responseText = await response.Content.ReadAsStringAsync();
-            
+
             // converts to dictionary
             Dictionary<string, object> tokenEndpointDecoded = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(responseText);
             string accessToken = tokenEndpointDecoded["access_token"].ToString();

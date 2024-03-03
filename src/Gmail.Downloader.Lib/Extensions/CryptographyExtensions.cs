@@ -1,9 +1,9 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace Gmail.Downloader.Lib.Services
+namespace Gmail.Downloader.Lib.Extensions
 {
-    public static class CryptographyService
+    public static class CryptographyExtensions
     {
         /// <summary>
         /// Returns the SHA256 hash of the input string, which is assumed to be ASCII.

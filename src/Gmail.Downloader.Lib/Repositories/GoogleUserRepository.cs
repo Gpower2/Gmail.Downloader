@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Gmail.Downloader.Lib.Services
 {
-    public class GoogleUserService
+    public class GoogleUserRepository
     {
         const string userinfoRequestUri = "https://www.googleapis.com/oauth2/v3/userinfo";
 
@@ -15,9 +15,9 @@ namespace Gmail.Downloader.Lib.Services
             BaseAddress = new Uri(userinfoRequestUri)
         };
 
-        private readonly ILogger<GoogleUserService> _logger;
+        private readonly ILogger<GoogleUserRepository> _logger;
 
-        public GoogleUserService(ILogger<GoogleUserService> logger)
+        public GoogleUserRepository(ILogger<GoogleUserRepository> logger)
         {
             ArgumentNullException.ThrowIfNull(_logger = logger);
         }

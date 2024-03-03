@@ -2,9 +2,9 @@
 using System.IO;
 using System.Linq;
 
-namespace Gmail.Downloader.Lib.Services
+namespace Gmail.Downloader.Lib.Extensions
 {
-    public static class FilenameService
+    public static class FilenameExtensions
     {
         private static readonly char[] _invalidFilenameChars = Path.GetInvalidFileNameChars();
 

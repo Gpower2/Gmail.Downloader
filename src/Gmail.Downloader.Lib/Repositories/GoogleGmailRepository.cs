@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using Gmail.Downloader.Lib.Constants;
 using Microsoft.Extensions.Logging;
 
-namespace Gmail.Downloader.Lib.Services
+namespace Gmail.Downloader.Lib.Repositories
 {
-    public class GoogleGmailService
+    public class GoogleGmailRepository
     {
         const string serviceEndpoint = "https://gmail.googleapis.com";
 
@@ -18,9 +18,9 @@ namespace Gmail.Downloader.Lib.Services
             BaseAddress = new Uri(serviceEndpoint)
         };
 
-        private readonly ILogger<GoogleGmailService> _logger;
+        private readonly ILogger<GoogleGmailRepository> _logger;
 
-        public GoogleGmailService(ILogger<GoogleGmailService> logger)
+        public GoogleGmailRepository(ILogger<GoogleGmailRepository> logger)
         {
             ArgumentNullException.ThrowIfNull(_logger = logger);
         }
@@ -33,7 +33,7 @@ namespace Gmail.Downloader.Lib.Services
 
             using HttpRequestMessage httpRequestMessage = new HttpRequestMessage();
             httpRequestMessage.Method = HttpMethod.Get;
-            
+
             httpRequestMessage.RequestUri = new Uri(serviceEndpoint + "/" + path);
 
             httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
@@ -116,7 +116,7 @@ namespace Gmail.Downloader.Lib.Services
             {
                 queryValues.Add("labelIds", labels[0]);
             }
-            
+
             // Include messages from SPAM and TRASH in the results.
             queryValues.Add("includeSpamTrash", "true");
 

@@ -7,7 +7,9 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Gmail.Downloader.Lib.Extensions;
 using Gmail.Downloader.Lib.Models;
+using Gmail.Downloader.Lib.Repositories;
 using Gmail.Downloader.Lib.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -51,7 +53,7 @@ namespace Gmail.Downloader
         {
             if (string.IsNullOrWhiteSpace(_accessToken))
             {
-                GoogleOAuthService googleOAuthService = new GoogleOAuthService(new NullLogger<GoogleOAuthService>());
+                GoogleOAuthRepository googleOAuthService = new GoogleOAuthRepository(new NullLogger<GoogleOAuthRepository>());
 
                 _accessToken = await googleOAuthService.DoOAuthAsync(
                     _clientSecret.ClientId,
@@ -61,13 +63,13 @@ namespace Gmail.Downloader
             this.Activate();
             this.Focus();
 
-            GoogleUserService googleUserService = new GoogleUserService(new NullLogger<GoogleUserService>());
+            GoogleUserRepository googleUserService = new GoogleUserRepository(new NullLogger<GoogleUserRepository>());
 
             string userInfo = await googleUserService.GetUserInfoAsync(_accessToken);
 
             GoogleUserInfo googleUserInfo = JsonSerializer.Deserialize<GoogleUserInfo>(userInfo, _jsonSerializerOptions);
 
-            GoogleGmailService googleGmailService = new GoogleGmailService(new NullLogger<GoogleGmailService>());
+            GoogleGmailRepository googleGmailService = new GoogleGmailRepository(new NullLogger<GoogleGmailRepository>());
 
             string profileInfo = await googleGmailService.GetCurrentUserProfileAsync(_accessToken);
 
@@ -93,7 +95,7 @@ namespace Gmail.Downloader
                 return;
             }
 
-            GoogleGmailService googleGmailService = new GoogleGmailService(new NullLogger<GoogleGmailService>());
+            GoogleGmailRepository googleGmailService = new GoogleGmailRepository(new NullLogger<GoogleGmailRepository>());
 
             string labelsResponse = await googleGmailService.GetCurrentUserLabelsAsync(_accessToken);
 
@@ -154,7 +156,7 @@ namespace Gmail.Downloader
                 return;
             }
 
-            GoogleGmailService googleGmailService = new GoogleGmailService(new NullLogger<GoogleGmailService>());
+            GoogleGmailRepository googleGmailService = new GoogleGmailRepository(new NullLogger<GoogleGmailRepository>());
 
             List<GmailMessage> allMessages = new List<GmailMessage>();
 
@@ -239,7 +241,7 @@ namespace Gmail.Downloader
 
             string path = Path.GetDirectoryName(sfd.FileName);
 
-            GoogleGmailService googleGmailService = new GoogleGmailService(new NullLogger<GoogleGmailService>());
+            GoogleGmailRepository googleGmailService = new GoogleGmailRepository(new NullLogger<GoogleGmailRepository>());
 
             progressBar.Minimum = 0;
             progressBar.Maximum = chkMessages.CheckedItems.Count;
