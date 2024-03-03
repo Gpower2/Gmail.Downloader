@@ -5,11 +5,12 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Gmail.Downloader.Lib.Constants;
+using Gmail.Downloader.Lib.Repositories.Abstractions;
 using Microsoft.Extensions.Logging;
 
 namespace Gmail.Downloader.Lib.Repositories
 {
-    public class GoogleGmailRepository
+    public class GoogleGmailRepository : IGoogleGmailRepository
     {
         const string serviceEndpoint = "https://gmail.googleapis.com";
 

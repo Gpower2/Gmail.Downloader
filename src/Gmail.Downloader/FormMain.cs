@@ -11,21 +11,28 @@ using Gmail.Downloader.Lib.Extensions;
 using Gmail.Downloader.Lib.Models;
 using Gmail.Downloader.Lib.Repositories;
 using Gmail.Downloader.Lib.Services;
+using Gmail.Downloader.Lib.Services.Abstractions;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Gmail.Downloader
 {
     public partial class FormMain : Form
     {
-        private static readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions()
-        {
-            AllowTrailingCommas = true,
-            PropertyNameCaseInsensitive = true,
-        };
-
         private string _accessToken = "";
 
         private GoogleClientSecret _clientSecret;
+
+        private readonly GoogleOAuthRepository _googleOAuthRepository = new GoogleOAuthRepository(
+            new NullLogger<GoogleOAuthRepository>());
+
+        private readonly IGoogleUserService _googleUserService = new GoogleUserService(
+            new GoogleUserRepository(new NullLogger<GoogleUserRepository>()), 
+            new NullLogger<GoogleUserService>());
+
+        private readonly IGoogleGmailService _googleGmailService = new GoogleGmailService(
+            new GoogleGmailRepository(new NullLogger<GoogleGmailRepository>()),
+            new NullLogger<GoogleGmailService>()
+        );
 
         public FormMain()
         {
@@ -53,9 +60,7 @@ namespace Gmail.Downloader
         {
             if (string.IsNullOrWhiteSpace(_accessToken))
             {
-                GoogleOAuthRepository googleOAuthService = new GoogleOAuthRepository(new NullLogger<GoogleOAuthRepository>());
-
-                _accessToken = await googleOAuthService.DoOAuthAsync(
+                _accessToken = await _googleOAuthRepository.DoOAuthAsync(
                     _clientSecret.ClientId,
                     _clientSecret.ClientSecret);
             }
@@ -63,17 +68,9 @@ namespace Gmail.Downloader
             this.Activate();
             this.Focus();
 
-            GoogleUserRepository googleUserService = new GoogleUserRepository(new NullLogger<GoogleUserRepository>());
+            GoogleUserInfo googleUserInfo = await _googleUserService.GetUserInfoAsync(_accessToken);
 
-            string userInfo = await googleUserService.GetUserInfoAsync(_accessToken);
-
-            GoogleUserInfo googleUserInfo = JsonSerializer.Deserialize<GoogleUserInfo>(userInfo, _jsonSerializerOptions);
-
-            GoogleGmailRepository googleGmailService = new GoogleGmailRepository(new NullLogger<GoogleGmailRepository>());
-
-            string profileInfo = await googleGmailService.GetCurrentUserProfileAsync(_accessToken);
-
-            GmailProfileInfo gmailProfileInfo = JsonSerializer.Deserialize<GmailProfileInfo>(profileInfo, _jsonSerializerOptions);
+            GmailProfileInfo gmailProfileInfo = await _googleGmailService.GetCurrentUserProfileAsync(_accessToken);
 
             StringBuilder infoBuilder = new StringBuilder();
 
@@ -95,11 +92,7 @@ namespace Gmail.Downloader
                 return;
             }
 
-            GoogleGmailRepository googleGmailService = new GoogleGmailRepository(new NullLogger<GoogleGmailRepository>());
-
-            string labelsResponse = await googleGmailService.GetCurrentUserLabelsAsync(_accessToken);
-
-            GmailLabelList labelList = JsonSerializer.Deserialize<GmailLabelList>(labelsResponse, _jsonSerializerOptions);
+            GmailLabelList labelList = await _googleGmailService.GetCurrentUserLabelsAsync(_accessToken);
 
             List<GmailLabel> labels = new List<GmailLabel>();
 
@@ -107,9 +100,7 @@ namespace Gmail.Downloader
 
             await Parallel.ForEachAsync(labelList.Labels, async (label, cancellationToken) =>
             {
-                labelsResponse = await googleGmailService.GetCurrentUserLabelAsync(_accessToken, label.Id);
-
-                GmailLabel finalLabel = JsonSerializer.Deserialize<GmailLabel>(labelsResponse, _jsonSerializerOptions);
+                GmailLabel finalLabel = await _googleGmailService.GetCurrentUserLabelAsync(_accessToken, label.Id);
 
                 lock (listLock)
                 {
@@ -156,8 +147,6 @@ namespace Gmail.Downloader
                 return;
             }
 
-            GoogleGmailRepository googleGmailService = new GoogleGmailRepository(new NullLogger<GoogleGmailRepository>());
-
             List<GmailMessage> allMessages = new List<GmailMessage>();
 
             StringBuilder filterBuilder = new StringBuilder();
@@ -172,17 +161,15 @@ namespace Gmail.Downloader
             {
                 GmailLabel label = labelItem as GmailLabel;
 
-                string messageResponse = await googleGmailService.GetCurrentUserMessagesAsync(_accessToken, filterQuery, new List<string>() { label.Id }, "");
-
-                GmailMessageList messageList = JsonSerializer.Deserialize<GmailMessageList>(messageResponse, _jsonSerializerOptions);
+                GmailMessageList messageList = await _googleGmailService.GetCurrentUserMessagesAsync(
+                    _accessToken, filterQuery, new List<string>() { label.Id }, "");
 
                 allMessages.AddRange(messageList.Messages);
 
                 while (!string.IsNullOrWhiteSpace(messageList.NextPageToken))
                 {
-                    messageResponse = await googleGmailService.GetCurrentUserMessagesAsync(_accessToken, filterQuery, new List<string>() { label.Id }, messageList.NextPageToken);
-
-                    messageList = JsonSerializer.Deserialize<GmailMessageList>(messageResponse, _jsonSerializerOptions);
+                    messageList = await _googleGmailService.GetCurrentUserMessagesAsync(
+                        _accessToken, filterQuery, new List<string>() { label.Id }, messageList.NextPageToken);
 
                     allMessages.AddRange(messageList.Messages);
                 }
@@ -194,9 +181,8 @@ namespace Gmail.Downloader
 
             await Parallel.ForEachAsync(allMessages, async (messageItem, cancellationToken) =>
             {
-                string messageResponse = await googleGmailService.GetCurrentUserMessageAsync(_accessToken, messageItem.Id, Lib.Constants.GoogleGmailFormat.MessageFormat.Metadata);
-
-                GmailMessage fullMessage = JsonSerializer.Deserialize<GmailMessage>(messageResponse, _jsonSerializerOptions);
+                GmailMessage fullMessage = await _googleGmailService.GetCurrentUserMessageAsync(
+                    _accessToken, messageItem.Id, Lib.Constants.GoogleGmailFormat.MessageFormat.Metadata);
 
                 lock (listLock)
                 {
@@ -241,8 +227,6 @@ namespace Gmail.Downloader
 
             string path = Path.GetDirectoryName(sfd.FileName);
 
-            GoogleGmailRepository googleGmailService = new GoogleGmailRepository(new NullLogger<GoogleGmailRepository>());
-
             progressBar.Minimum = 0;
             progressBar.Maximum = chkMessages.CheckedItems.Count;
             progressBar.Value = 0;
@@ -250,18 +234,16 @@ namespace Gmail.Downloader
             int counter = 0;
             foreach (object messageItem in chkMessages.CheckedItems)
             {
-                string messageResponse = await googleGmailService.GetCurrentUserMessageAsync(_accessToken, (messageItem as GmailMessage).Id, Lib.Constants.GoogleGmailFormat.MessageFormat.Full);
-
-                GmailMessage message = JsonSerializer.Deserialize<GmailMessage>(messageResponse, _jsonSerializerOptions);
+                GmailMessage message = await _googleGmailService.GetCurrentUserMessageAsync(
+                    _accessToken, (messageItem as GmailMessage).Id, Lib.Constants.GoogleGmailFormat.MessageFormat.Full);
 
                 var attachments = message.Payload.Parts?.Where(p => !string.IsNullOrWhiteSpace(p.Body.AttachmentId))?.ToList() 
                     ?? Enumerable.Empty<GmailMessagePart>();
 
                 foreach (GmailMessagePart attachment in attachments)
                 {
-                    string response = await googleGmailService.GetCurrentUserMessageAttachmentAsync(_accessToken, message.Id, attachment.Body.AttachmentId);
-
-                    GmailMessagePartBody attachmentBody = JsonSerializer.Deserialize<GmailMessagePartBody>(response, _jsonSerializerOptions);
+                    GmailMessagePartBody attachmentBody = await _googleGmailService.GetCurrentUserMessageAttachmentAsync(
+                        _accessToken, message.Id, attachment.Body.AttachmentId);
 
                     string datePrefix = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(message.InternalDate)).DateTime.ToString("yyyy-MM-dd_HH-mm_");
 

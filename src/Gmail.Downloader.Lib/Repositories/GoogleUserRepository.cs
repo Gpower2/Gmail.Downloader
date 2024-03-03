@@ -2,11 +2,12 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Gmail.Downloader.Lib.Repositories.Abstractions;
 using Microsoft.Extensions.Logging;
 
-namespace Gmail.Downloader.Lib.Services
+namespace Gmail.Downloader.Lib.Repositories
 {
-    public class GoogleUserRepository
+    public class GoogleUserRepository : IGoogleUserRepository
     {
         const string userinfoRequestUri = "https://www.googleapis.com/oauth2/v3/userinfo";
 

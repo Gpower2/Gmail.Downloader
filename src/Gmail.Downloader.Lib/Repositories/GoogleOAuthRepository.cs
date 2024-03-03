@@ -8,12 +8,13 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Gmail.Downloader.Lib.Extensions;
+using Gmail.Downloader.Lib.Repositories.Abstractions;
 using Gmail.Downloader.Lib.Services;
 using Microsoft.Extensions.Logging;
 
 namespace Gmail.Downloader.Lib.Repositories
 {
-    public class GoogleOAuthRepository
+    public class GoogleOAuthRepository : IGoogleOAuthRepository
     {
         const string AuthorizationEndpoint = "https://accounts.google.com/o/oauth2/v2/auth";
         const string responseString = "<html><head><meta http-equiv='refresh' content='10;url=https://google.com'></head><body>Please return to the app.</body></html>";
