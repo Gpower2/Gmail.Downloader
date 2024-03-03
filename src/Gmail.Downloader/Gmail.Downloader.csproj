@@ -6,7 +6,12 @@
     <Nullable>disable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>disable</ImplicitUsings>
+    <ApplicationIcon>GmailDownloaderLogo.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="GmailDownloaderLogo.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Gmail.Downloader.Lib\Gmail.Downloader.Lib.csproj" />

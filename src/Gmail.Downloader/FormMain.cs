@@ -41,6 +41,9 @@ namespace Gmail.Downloader
             // Set form title 
             Text = string.Format("Gmail Downloader v{0} -- By Gpower2", Assembly.GetExecutingAssembly().GetName().Version);
 
+            // Set form icon from the executing assembly
+            Icon = System.Drawing.Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
+
             dateTimePickerFrom.Value = DateTime.Now.AddMonths(-1);
 
             // Read the Google Client Secrets
