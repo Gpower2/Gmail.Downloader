@@ -77,14 +77,22 @@ namespace Gmail.Downloader
                 {
                     // We already have a token, let's ask if we want to login again
                     var answer = MessageBox.Show(
-                        $"You are already logged in!{Environment.NewLine}Do you want to login again?",
+                        $"You are already logged in!{Environment.NewLine}Do you want to login again?{Environment.NewLine}{Environment.NewLine}Yes: Login again and refresh user data{Environment.NewLine}No: Refresh user data for existing login{Environment.NewLine}Cancel: No actions will take place",
                         "Do you want to login again?",
-                        MessageBoxButtons.YesNo,
+                        MessageBoxButtons.YesNoCancel,
                         MessageBoxIcon.Question);
 
                     if (answer == DialogResult.Yes)
                     {
                         doLogin = true;
+                    }
+                    else if (answer == DialogResult.Cancel)
+                    {
+                        tlpLogin.Enabled = true;
+                        this.Cursor = Cursors.Default;
+                        Application.DoEvents();
+
+                        return;
                     }
                 }
 
