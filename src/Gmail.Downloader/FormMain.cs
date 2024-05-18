@@ -19,6 +19,7 @@ namespace Gmail.Downloader
     public partial class FormMain : Form
     {
         private string _accessToken = "";
+        private DateTime _loginDate = DateTime.Now;
 
         private GoogleClientSecret _clientSecret;
 
@@ -67,7 +68,6 @@ namespace Gmail.Downloader
                 this.Cursor = Cursors.WaitCursor;
                 Application.DoEvents();
 
-                DateTime loginDate = DateTime.Now;
                 bool doLogin = false;
                 if (string.IsNullOrWhiteSpace(_accessToken))
                 {
@@ -94,7 +94,7 @@ namespace Gmail.Downloader
                         _clientSecret.ClientId,
                         _clientSecret.ClientSecret);
 
-                    loginDate = DateTime.Now;
+                    _loginDate = DateTime.Now;
                 }
 
                 this.Activate();
@@ -106,7 +106,7 @@ namespace Gmail.Downloader
 
                 StringBuilder infoBuilder = new StringBuilder();
 
-                infoBuilder.AppendLine($"Login time: {loginDate:yyyy-MM-dd HH:mm:ss}");
+                infoBuilder.AppendLine($"Login time: {_loginDate:yyyy-MM-dd HH:mm:ss}");
                 infoBuilder.AppendLine($"Sub: {googleUserInfo.Sub} - Locale: {googleUserInfo.Locale}");
                 infoBuilder.AppendLine($"Name: {googleUserInfo.Name} - Email: {gmailProfileInfo.EmailAddress}");
                 infoBuilder.AppendLine($"Total Messages: {gmailProfileInfo.MessagesTotal}");
