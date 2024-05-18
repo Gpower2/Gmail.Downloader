@@ -39,8 +39,8 @@ namespace Gmail.Downloader
             btnGetAttachments = new Button();
             chkMessages = new CheckedListBox();
             grpMessages = new GroupBox();
-            tableLayoutPanel4 = new TableLayoutPanel();
-            panel1 = new Panel();
+            tlpMessagesContent = new TableLayoutPanel();
+            pnlMessageActions = new Panel();
             btnCheckAllMessages = new Button();
             btnUncheckAllMessages = new Button();
             progressBar = new ProgressBar();
@@ -52,32 +52,32 @@ namespace Gmail.Downloader
             dateTimePickerTo = new DateTimePicker();
             grpFrom = new GroupBox();
             grpTo = new GroupBox();
-            tableLayoutPanel1 = new TableLayoutPanel();
+            tlpMain = new TableLayoutPanel();
             grpLogin = new GroupBox();
-            tableLayoutPanel2 = new TableLayoutPanel();
-            splitContainer1 = new SplitContainer();
-            tableLayoutPanel3 = new TableLayoutPanel();
-            panel2 = new Panel();
-            panel3 = new Panel();
-            tableLayoutPanel5 = new TableLayoutPanel();
+            tlpLogin = new TableLayoutPanel();
+            spltMain = new SplitContainer();
+            tlpMessagesMain = new TableLayoutPanel();
+            pnlFilters = new Panel();
+            pnlActions = new Panel();
+            tlpStatus = new TableLayoutPanel();
             grpLabels.SuspendLayout();
             grpMessages.SuspendLayout();
-            tableLayoutPanel4.SuspendLayout();
-            panel1.SuspendLayout();
+            tlpMessagesContent.SuspendLayout();
+            pnlMessageActions.SuspendLayout();
             grpFilterQuery.SuspendLayout();
             grpFrom.SuspendLayout();
             grpTo.SuspendLayout();
-            tableLayoutPanel1.SuspendLayout();
+            tlpMain.SuspendLayout();
             grpLogin.SuspendLayout();
-            tableLayoutPanel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
-            splitContainer1.Panel1.SuspendLayout();
-            splitContainer1.Panel2.SuspendLayout();
-            splitContainer1.SuspendLayout();
-            tableLayoutPanel3.SuspendLayout();
-            panel2.SuspendLayout();
-            panel3.SuspendLayout();
-            tableLayoutPanel5.SuspendLayout();
+            tlpLogin.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)spltMain).BeginInit();
+            spltMain.Panel1.SuspendLayout();
+            spltMain.Panel2.SuspendLayout();
+            spltMain.SuspendLayout();
+            tlpMessagesMain.SuspendLayout();
+            pnlFilters.SuspendLayout();
+            pnlActions.SuspendLayout();
+            tlpStatus.SuspendLayout();
             SuspendLayout();
             // 
             // btnLogin
@@ -153,7 +153,7 @@ namespace Gmail.Downloader
             // 
             // grpMessages
             // 
-            grpMessages.Controls.Add(tableLayoutPanel4);
+            grpMessages.Controls.Add(tlpMessagesContent);
             grpMessages.Dock = DockStyle.Fill;
             grpMessages.Location = new Point(3, 168);
             grpMessages.Name = "grpMessages";
@@ -162,30 +162,30 @@ namespace Gmail.Downloader
             grpMessages.TabStop = false;
             grpMessages.Text = "Messages";
             // 
-            // tableLayoutPanel4
+            // tlpMessagesContent
             // 
-            tableLayoutPanel4.ColumnCount = 2;
-            tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 90F));
-            tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            tableLayoutPanel4.Controls.Add(chkMessages, 1, 0);
-            tableLayoutPanel4.Controls.Add(panel1, 0, 0);
-            tableLayoutPanel4.Dock = DockStyle.Fill;
-            tableLayoutPanel4.Location = new Point(3, 19);
-            tableLayoutPanel4.Name = "tableLayoutPanel4";
-            tableLayoutPanel4.RowCount = 1;
-            tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel4.Size = new Size(570, 362);
-            tableLayoutPanel4.TabIndex = 0;
+            tlpMessagesContent.ColumnCount = 2;
+            tlpMessagesContent.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 90F));
+            tlpMessagesContent.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tlpMessagesContent.Controls.Add(chkMessages, 1, 0);
+            tlpMessagesContent.Controls.Add(pnlMessageActions, 0, 0);
+            tlpMessagesContent.Dock = DockStyle.Fill;
+            tlpMessagesContent.Location = new Point(3, 19);
+            tlpMessagesContent.Name = "tlpMessagesContent";
+            tlpMessagesContent.RowCount = 1;
+            tlpMessagesContent.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tlpMessagesContent.Size = new Size(570, 362);
+            tlpMessagesContent.TabIndex = 0;
             // 
-            // panel1
+            // pnlMessageActions
             // 
-            panel1.Controls.Add(btnCheckAllMessages);
-            panel1.Controls.Add(btnUncheckAllMessages);
-            panel1.Dock = DockStyle.Fill;
-            panel1.Location = new Point(3, 3);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(84, 356);
-            panel1.TabIndex = 16;
+            pnlMessageActions.Controls.Add(btnCheckAllMessages);
+            pnlMessageActions.Controls.Add(btnUncheckAllMessages);
+            pnlMessageActions.Dock = DockStyle.Fill;
+            pnlMessageActions.Location = new Point(3, 3);
+            pnlMessageActions.Name = "pnlMessageActions";
+            pnlMessageActions.Size = new Size(84, 356);
+            pnlMessageActions.TabIndex = 16;
             // 
             // btnCheckAllMessages
             // 
@@ -291,27 +291,27 @@ namespace Gmail.Downloader
             grpTo.TabStop = false;
             grpTo.Text = "To";
             // 
-            // tableLayoutPanel1
+            // tlpMain
             // 
-            tableLayoutPanel1.ColumnCount = 1;
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel1.Controls.Add(grpLogin, 0, 0);
-            tableLayoutPanel1.Controls.Add(splitContainer1, 0, 1);
-            tableLayoutPanel1.Controls.Add(tableLayoutPanel5, 0, 2);
-            tableLayoutPanel1.Dock = DockStyle.Fill;
-            tableLayoutPanel1.Location = new Point(0, 0);
-            tableLayoutPanel1.Name = "tableLayoutPanel1";
-            tableLayoutPanel1.RowCount = 3;
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 100F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 100F));
-            tableLayoutPanel1.Size = new Size(884, 761);
-            tableLayoutPanel1.TabIndex = 28;
+            tlpMain.ColumnCount = 1;
+            tlpMain.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tlpMain.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
+            tlpMain.Controls.Add(grpLogin, 0, 0);
+            tlpMain.Controls.Add(spltMain, 0, 1);
+            tlpMain.Controls.Add(tlpStatus, 0, 2);
+            tlpMain.Dock = DockStyle.Fill;
+            tlpMain.Location = new Point(0, 0);
+            tlpMain.Name = "tlpMain";
+            tlpMain.RowCount = 3;
+            tlpMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 100F));
+            tlpMain.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tlpMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 100F));
+            tlpMain.Size = new Size(884, 761);
+            tlpMain.TabIndex = 28;
             // 
             // grpLogin
             // 
-            grpLogin.Controls.Add(tableLayoutPanel2);
+            grpLogin.Controls.Add(tlpLogin);
             grpLogin.Dock = DockStyle.Fill;
             grpLogin.Location = new Point(3, 3);
             grpLogin.Name = "grpLogin";
@@ -320,123 +320,123 @@ namespace Gmail.Downloader
             grpLogin.TabStop = false;
             grpLogin.Text = "Login";
             // 
-            // tableLayoutPanel2
+            // tlpLogin
             // 
-            tableLayoutPanel2.ColumnCount = 2;
-            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 100F));
-            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            tableLayoutPanel2.Controls.Add(btnLogin, 0, 0);
-            tableLayoutPanel2.Controls.Add(txtUserInfo, 1, 0);
-            tableLayoutPanel2.Dock = DockStyle.Fill;
-            tableLayoutPanel2.Location = new Point(3, 19);
-            tableLayoutPanel2.Name = "tableLayoutPanel2";
-            tableLayoutPanel2.RowCount = 1;
-            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel2.Size = new Size(872, 72);
-            tableLayoutPanel2.TabIndex = 0;
+            tlpLogin.ColumnCount = 2;
+            tlpLogin.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 100F));
+            tlpLogin.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tlpLogin.Controls.Add(btnLogin, 0, 0);
+            tlpLogin.Controls.Add(txtUserInfo, 1, 0);
+            tlpLogin.Dock = DockStyle.Fill;
+            tlpLogin.Location = new Point(3, 19);
+            tlpLogin.Name = "tlpLogin";
+            tlpLogin.RowCount = 1;
+            tlpLogin.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tlpLogin.Size = new Size(872, 72);
+            tlpLogin.TabIndex = 0;
             // 
-            // splitContainer1
+            // spltMain
             // 
-            splitContainer1.Dock = DockStyle.Fill;
-            splitContainer1.Location = new Point(3, 103);
-            splitContainer1.Name = "splitContainer1";
+            spltMain.Dock = DockStyle.Fill;
+            spltMain.Location = new Point(3, 103);
+            spltMain.Name = "spltMain";
             // 
-            // splitContainer1.Panel1
+            // spltMain.Panel1
             // 
-            splitContainer1.Panel1.Controls.Add(grpLabels);
+            spltMain.Panel1.Controls.Add(grpLabels);
             // 
-            // splitContainer1.Panel2
+            // spltMain.Panel2
             // 
-            splitContainer1.Panel2.Controls.Add(tableLayoutPanel3);
-            splitContainer1.Size = new Size(878, 555);
-            splitContainer1.SplitterDistance = 292;
-            splitContainer1.TabIndex = 1;
+            spltMain.Panel2.Controls.Add(tlpMessagesMain);
+            spltMain.Size = new Size(878, 555);
+            spltMain.SplitterDistance = 292;
+            spltMain.TabIndex = 1;
             // 
-            // tableLayoutPanel3
+            // tlpMessagesMain
             // 
-            tableLayoutPanel3.ColumnCount = 1;
-            tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            tableLayoutPanel3.Controls.Add(grpMessages, 0, 3);
-            tableLayoutPanel3.Controls.Add(grpFilterQuery, 0, 0);
-            tableLayoutPanel3.Controls.Add(panel2, 0, 1);
-            tableLayoutPanel3.Controls.Add(panel3, 0, 2);
-            tableLayoutPanel3.Dock = DockStyle.Fill;
-            tableLayoutPanel3.Location = new Point(0, 0);
-            tableLayoutPanel3.Name = "tableLayoutPanel3";
-            tableLayoutPanel3.RowCount = 4;
-            tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 55F));
-            tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
-            tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
-            tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel3.Size = new Size(582, 555);
-            tableLayoutPanel3.TabIndex = 0;
+            tlpMessagesMain.ColumnCount = 1;
+            tlpMessagesMain.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tlpMessagesMain.Controls.Add(grpMessages, 0, 3);
+            tlpMessagesMain.Controls.Add(grpFilterQuery, 0, 0);
+            tlpMessagesMain.Controls.Add(pnlFilters, 0, 1);
+            tlpMessagesMain.Controls.Add(pnlActions, 0, 2);
+            tlpMessagesMain.Dock = DockStyle.Fill;
+            tlpMessagesMain.Location = new Point(0, 0);
+            tlpMessagesMain.Name = "tlpMessagesMain";
+            tlpMessagesMain.RowCount = 4;
+            tlpMessagesMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 55F));
+            tlpMessagesMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
+            tlpMessagesMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
+            tlpMessagesMain.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tlpMessagesMain.Size = new Size(582, 555);
+            tlpMessagesMain.TabIndex = 0;
             // 
-            // panel2
+            // pnlFilters
             // 
-            panel2.Controls.Add(grpFrom);
-            panel2.Controls.Add(grpTo);
-            panel2.Dock = DockStyle.Fill;
-            panel2.Location = new Point(3, 58);
-            panel2.Name = "panel2";
-            panel2.Size = new Size(576, 54);
-            panel2.TabIndex = 21;
+            pnlFilters.Controls.Add(grpFrom);
+            pnlFilters.Controls.Add(grpTo);
+            pnlFilters.Dock = DockStyle.Fill;
+            pnlFilters.Location = new Point(3, 58);
+            pnlFilters.Name = "pnlFilters";
+            pnlFilters.Size = new Size(576, 54);
+            pnlFilters.TabIndex = 21;
             // 
-            // panel3
+            // pnlActions
             // 
-            panel3.Controls.Add(btnGetLabels);
-            panel3.Controls.Add(btnGetMessages);
-            panel3.Controls.Add(btnGetAttachments);
-            panel3.Dock = DockStyle.Fill;
-            panel3.Location = new Point(3, 118);
-            panel3.Name = "panel3";
-            panel3.Size = new Size(576, 44);
-            panel3.TabIndex = 22;
+            pnlActions.Controls.Add(btnGetLabels);
+            pnlActions.Controls.Add(btnGetMessages);
+            pnlActions.Controls.Add(btnGetAttachments);
+            pnlActions.Dock = DockStyle.Fill;
+            pnlActions.Location = new Point(3, 118);
+            pnlActions.Name = "pnlActions";
+            pnlActions.Size = new Size(576, 44);
+            pnlActions.TabIndex = 22;
             // 
-            // tableLayoutPanel5
+            // tlpStatus
             // 
-            tableLayoutPanel5.ColumnCount = 1;
-            tableLayoutPanel5.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            tableLayoutPanel5.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel5.Controls.Add(progressBar, 0, 0);
-            tableLayoutPanel5.Controls.Add(txtStatus, 0, 1);
-            tableLayoutPanel5.Dock = DockStyle.Fill;
-            tableLayoutPanel5.Location = new Point(3, 664);
-            tableLayoutPanel5.Name = "tableLayoutPanel5";
-            tableLayoutPanel5.RowCount = 2;
-            tableLayoutPanel5.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel5.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
-            tableLayoutPanel5.Size = new Size(878, 94);
-            tableLayoutPanel5.TabIndex = 2;
+            tlpStatus.ColumnCount = 1;
+            tlpStatus.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tlpStatus.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
+            tlpStatus.Controls.Add(progressBar, 0, 0);
+            tlpStatus.Controls.Add(txtStatus, 0, 1);
+            tlpStatus.Dock = DockStyle.Fill;
+            tlpStatus.Location = new Point(3, 664);
+            tlpStatus.Name = "tlpStatus";
+            tlpStatus.RowCount = 2;
+            tlpStatus.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tlpStatus.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
+            tlpStatus.Size = new Size(878, 94);
+            tlpStatus.TabIndex = 2;
             // 
             // FormMain
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(884, 761);
-            Controls.Add(tableLayoutPanel1);
+            Controls.Add(tlpMain);
             Name = "FormMain";
             Text = "GmailDownloader";
             grpLabels.ResumeLayout(false);
             grpMessages.ResumeLayout(false);
-            tableLayoutPanel4.ResumeLayout(false);
-            panel1.ResumeLayout(false);
+            tlpMessagesContent.ResumeLayout(false);
+            pnlMessageActions.ResumeLayout(false);
             grpFilterQuery.ResumeLayout(false);
             grpFilterQuery.PerformLayout();
             grpFrom.ResumeLayout(false);
             grpTo.ResumeLayout(false);
-            tableLayoutPanel1.ResumeLayout(false);
+            tlpMain.ResumeLayout(false);
             grpLogin.ResumeLayout(false);
-            tableLayoutPanel2.ResumeLayout(false);
-            tableLayoutPanel2.PerformLayout();
-            splitContainer1.Panel1.ResumeLayout(false);
-            splitContainer1.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
-            splitContainer1.ResumeLayout(false);
-            tableLayoutPanel3.ResumeLayout(false);
-            panel2.ResumeLayout(false);
-            panel3.ResumeLayout(false);
-            tableLayoutPanel5.ResumeLayout(false);
-            tableLayoutPanel5.PerformLayout();
+            tlpLogin.ResumeLayout(false);
+            tlpLogin.PerformLayout();
+            spltMain.Panel1.ResumeLayout(false);
+            spltMain.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)spltMain).EndInit();
+            spltMain.ResumeLayout(false);
+            tlpMessagesMain.ResumeLayout(false);
+            pnlFilters.ResumeLayout(false);
+            pnlActions.ResumeLayout(false);
+            tlpStatus.ResumeLayout(false);
+            tlpStatus.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -460,15 +460,15 @@ namespace Gmail.Downloader
         private GroupBox grpTo;
         private Button btnCheckAllMessages;
         private Button btnUncheckAllMessages;
-        private TableLayoutPanel tableLayoutPanel4;
-        private Panel panel1;
-        private TableLayoutPanel tableLayoutPanel1;
+        private TableLayoutPanel tlpMessagesContent;
+        private Panel pnlMessageActions;
+        private TableLayoutPanel tlpMain;
         private GroupBox grpLogin;
-        private TableLayoutPanel tableLayoutPanel2;
-        private SplitContainer splitContainer1;
-        private TableLayoutPanel tableLayoutPanel3;
-        private TableLayoutPanel tableLayoutPanel5;
-        private Panel panel2;
-        private Panel panel3;
+        private TableLayoutPanel tlpLogin;
+        private SplitContainer spltMain;
+        private TableLayoutPanel tlpMessagesMain;
+        private TableLayoutPanel tlpStatus;
+        private Panel pnlFilters;
+        private Panel pnlActions;
     }
 }

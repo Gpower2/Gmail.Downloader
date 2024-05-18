@@ -63,6 +63,10 @@ namespace Gmail.Downloader
         {
             try
             {
+                tlpLogin.Enabled = false;
+                this.Cursor = Cursors.WaitCursor;
+                Application.DoEvents();
+
                 DateTime loginDate = DateTime.Now;
                 bool doLogin = false;
                 if (string.IsNullOrWhiteSpace(_accessToken))
@@ -108,11 +112,21 @@ namespace Gmail.Downloader
                 infoBuilder.AppendLine($"Total Messages: {gmailProfileInfo.MessagesTotal}");
 
                 txtUserInfo.Text = infoBuilder.ToString();
+
+                tlpLogin.Enabled = true;
+                this.Cursor = Cursors.Default;
+                Application.DoEvents();
             }
             catch (Exception ex)
             {
                 txtUserInfo.Clear();
+                this.Cursor = Cursors.Default;
+                Application.DoEvents();
+
                 MessageBox.Show($"An error has occured!{Environment.NewLine}{ex.Message}", "An error has occured!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                tlpLogin.Enabled = true;
+                Application.DoEvents();
             }
         }
 
@@ -126,6 +140,10 @@ namespace Gmail.Downloader
 
             try
             {
+                tlpMessagesMain.Enabled = false;
+                this.Cursor = Cursors.WaitCursor;
+                Application.DoEvents();
+
                 GmailLabelList labelList = await _googleGmailService.GetCurrentUserLabelsAsync(_accessToken);
 
                 List<GmailLabel> labels = new List<GmailLabel>();
@@ -147,12 +165,23 @@ namespace Gmail.Downloader
                 chkLabels.Items.AddRange(labels.OrderBy(l => l.Name).ToArray());
 
                 grpLabels.Text = $"Labels ({labels.Count})";
+
+                tlpMessagesMain.Enabled = true;
+                this.Cursor = Cursors.Default;
+                Application.DoEvents();
             }
             catch (Exception ex)
             {
                 chkLabels.Items.Clear();
                 grpLabels.Text = $"Labels (0)";
+
+                this.Cursor = Cursors.Default;
+                Application.DoEvents();
+
                 MessageBox.Show($"An error has occured!{Environment.NewLine}{ex.Message}", "An error has occured!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                tlpMessagesMain.Enabled = true;
+                Application.DoEvents();
             }
         }
 
@@ -190,6 +219,10 @@ namespace Gmail.Downloader
 
             try
             {
+                tlpMessagesMain.Enabled = false;
+                this.Cursor = Cursors.WaitCursor;
+                Application.DoEvents();
+
                 List<GmailMessage> allMessages = new List<GmailMessage>();
 
                 StringBuilder filterBuilder = new StringBuilder();
@@ -239,12 +272,23 @@ namespace Gmail.Downloader
                 chkMessages.Items.AddRange(finalMessages.OrderByDescending(m => m.InternalDate).ToArray());
 
                 grpMessages.Text = $"Messages ({finalMessages.Count})";
+
+                tlpMessagesMain.Enabled = true;
+                this.Cursor = Cursors.Default;
+                Application.DoEvents();
             }
             catch (Exception ex)
             {
                 chkMessages.Items.Clear();
                 grpMessages.Text = $"Messages (0)";
+
+                this.Cursor = Cursors.Default;
+                Application.DoEvents();
+
                 MessageBox.Show($"An error has occured!{Environment.NewLine}{ex.Message}", "An error has occured!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                tlpMessagesMain.Enabled = true;
+                Application.DoEvents();
             }
         }
 
@@ -278,6 +322,10 @@ namespace Gmail.Downloader
 
             try
             {
+                tlpMessagesMain.Enabled = false;
+                this.Cursor = Cursors.WaitCursor;
+                Application.DoEvents();
+
                 string path = Path.GetDirectoryName(sfd.FileName);
 
                 progressBar.Minimum = 0;
@@ -313,11 +361,23 @@ namespace Gmail.Downloader
                     UpdateProgressBar(counter);
                 }
 
+                this.Cursor = Cursors.Default;
+                Application.DoEvents();
+
                 MessageBox.Show($"All attachments ({counter}) were downloaded!", "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                tlpMessagesMain.Enabled = true;
+                Application.DoEvents();
             }
             catch (Exception ex)
             {
+                this.Cursor = Cursors.Default;
+                Application.DoEvents();
+
                 MessageBox.Show($"An error has occured!{Environment.NewLine}{ex.Message}", "An error has occured!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                tlpMessagesMain.Enabled = true;
+                Application.DoEvents();
             }
         }
 
