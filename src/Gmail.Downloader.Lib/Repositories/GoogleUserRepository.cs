@@ -37,6 +37,8 @@ namespace Gmail.Downloader.Lib.Repositories
 
             using HttpResponseMessage response = await _httpClient.SendAsync(httpRequestMessage);
 
+            response.EnsureSuccessStatusCode();
+
             return await response.Content.ReadAsStringAsync();
         }
     }

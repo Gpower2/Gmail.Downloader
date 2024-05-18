@@ -61,30 +61,59 @@ namespace Gmail.Downloader
 
         private async void btnLogin_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(_accessToken))
+            try
             {
-                _accessToken = await _googleOAuthRepository.DoOAuthAsync(
-                    _clientSecret.ClientId,
-                    _clientSecret.ClientSecret);
+                DateTime loginDate = DateTime.Now;
+                bool doLogin = false;
+                if (string.IsNullOrWhiteSpace(_accessToken))
+                {
+                    doLogin = true;
+                }
+                else
+                {
+                    // We already have a token, let's ask if we want to login again
+                    var answer = MessageBox.Show(
+                        $"You are already logged in!{Environment.NewLine}Do you want to login again?",
+                        "Do you want to login again?",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question);
+
+                    if (answer == DialogResult.Yes)
+                    {
+                        doLogin = true;
+                    }
+                }
+
+                if (doLogin)
+                {
+                    _accessToken = await _googleOAuthRepository.DoOAuthAsync(
+                        _clientSecret.ClientId,
+                        _clientSecret.ClientSecret);
+
+                    loginDate = DateTime.Now;
+                }
+
+                this.Activate();
+                this.Focus();
+
+                GoogleUserInfo googleUserInfo = await _googleUserService.GetUserInfoAsync(_accessToken);
+
+                GmailProfileInfo gmailProfileInfo = await _googleGmailService.GetCurrentUserProfileAsync(_accessToken);
+
+                StringBuilder infoBuilder = new StringBuilder();
+
+                infoBuilder.AppendLine($"Login time: {loginDate:yyyy-MM-dd HH:mm:ss}");
+                infoBuilder.AppendLine($"Sub: {googleUserInfo.Sub} - Locale: {googleUserInfo.Locale}");
+                infoBuilder.AppendLine($"Name: {googleUserInfo.Name} - Email: {gmailProfileInfo.EmailAddress}");
+                infoBuilder.AppendLine($"Total Messages: {gmailProfileInfo.MessagesTotal}");
+
+                txtUserInfo.Text = infoBuilder.ToString();
             }
-
-            this.Activate();
-            this.Focus();
-
-            GoogleUserInfo googleUserInfo = await _googleUserService.GetUserInfoAsync(_accessToken);
-
-            GmailProfileInfo gmailProfileInfo = await _googleGmailService.GetCurrentUserProfileAsync(_accessToken);
-
-            StringBuilder infoBuilder = new StringBuilder();
-
-            infoBuilder.AppendLine($"Sub: {googleUserInfo.Sub}");
-            infoBuilder.AppendLine($"Name: {googleUserInfo.Name}");
-            infoBuilder.AppendLine($"Locale: {googleUserInfo.Locale}");
-
-            infoBuilder.AppendLine($"Email: {gmailProfileInfo.EmailAddress}");
-            infoBuilder.AppendLine($"Total Messages: {gmailProfileInfo.MessagesTotal}");
-
-            txtUserInfo.Text = infoBuilder.ToString();
+            catch (Exception ex)
+            {
+                txtUserInfo.Clear();
+                MessageBox.Show($"An error has occured!{Environment.NewLine}{ex.Message}", "An error has occured!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private async void btnGetLabels_Click(object sender, EventArgs e)
@@ -95,27 +124,36 @@ namespace Gmail.Downloader
                 return;
             }
 
-            GmailLabelList labelList = await _googleGmailService.GetCurrentUserLabelsAsync(_accessToken);
-
-            List<GmailLabel> labels = new List<GmailLabel>();
-
-            object listLock = new object();
-
-            await Parallel.ForEachAsync(labelList.Labels, async (label, cancellationToken) =>
+            try
             {
-                GmailLabel finalLabel = await _googleGmailService.GetCurrentUserLabelAsync(_accessToken, label.Id);
+                GmailLabelList labelList = await _googleGmailService.GetCurrentUserLabelsAsync(_accessToken);
 
-                lock (listLock)
+                List<GmailLabel> labels = new List<GmailLabel>();
+
+                object listLock = new object();
+
+                await Parallel.ForEachAsync(labelList.Labels, async (label, cancellationToken) =>
                 {
-                    labels.Add(finalLabel);
-                }
-            });
+                    GmailLabel finalLabel = await _googleGmailService.GetCurrentUserLabelAsync(_accessToken, label.Id);
 
-            chkLabels.Items.Clear();
+                    lock (listLock)
+                    {
+                        labels.Add(finalLabel);
+                    }
+                });
 
-            chkLabels.Items.AddRange(labels.OrderBy(l => l.Name).ToArray());
+                chkLabels.Items.Clear();
 
-            grpLabels.Text = $"Labels ({labels.Count})";
+                chkLabels.Items.AddRange(labels.OrderBy(l => l.Name).ToArray());
+
+                grpLabels.Text = $"Labels ({labels.Count})";
+            }
+            catch (Exception ex)
+            {
+                chkLabels.Items.Clear();
+                grpLabels.Text = $"Labels (0)";
+                MessageBox.Show($"An error has occured!{Environment.NewLine}{ex.Message}", "An error has occured!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private async void btnGetMessages_Click(object sender, EventArgs e)
@@ -150,54 +188,64 @@ namespace Gmail.Downloader
                 return;
             }
 
-            List<GmailMessage> allMessages = new List<GmailMessage>();
-
-            StringBuilder filterBuilder = new StringBuilder();
-            filterBuilder.Append(txtFilterQuery.Text.Trim());
-
-            filterBuilder.Append($" after:{dateTimePickerFrom.Value:yyyy/MM/dd}");
-            filterBuilder.Append($" before:{dateTimePickerTo.Value:yyyy/MM/dd}");
-
-            string filterQuery = filterBuilder.ToString();
-
-            foreach (object labelItem in chkLabels.CheckedItems)
+            try
             {
-                GmailLabel label = labelItem as GmailLabel;
+                List<GmailMessage> allMessages = new List<GmailMessage>();
 
-                GmailMessageList messageList = await _googleGmailService.GetCurrentUserMessagesAsync(
-                    _accessToken, filterQuery, new List<string>() { label.Id }, "");
+                StringBuilder filterBuilder = new StringBuilder();
+                filterBuilder.Append(txtFilterQuery.Text.Trim());
 
-                allMessages.AddRange(messageList.Messages);
+                filterBuilder.Append($" after:{dateTimePickerFrom.Value:yyyy/MM/dd}");
+                // We add 1 day to make the To field inclusive, since before is not inclusive in the filters
+                filterBuilder.Append($" before:{dateTimePickerTo.Value.AddDays(1):yyyy/MM/dd}");
 
-                while (!string.IsNullOrWhiteSpace(messageList.NextPageToken))
+                string filterQuery = filterBuilder.ToString();
+
+                foreach (object labelItem in chkLabels.CheckedItems)
                 {
-                    messageList = await _googleGmailService.GetCurrentUserMessagesAsync(
-                        _accessToken, filterQuery, new List<string>() { label.Id }, messageList.NextPageToken);
+                    GmailLabel label = labelItem as GmailLabel;
+
+                    GmailMessageList messageList = await _googleGmailService.GetCurrentUserMessagesAsync(
+                        _accessToken, filterQuery, new List<string>() { label.Id }, "");
 
                     allMessages.AddRange(messageList.Messages);
+
+                    while (!string.IsNullOrWhiteSpace(messageList.NextPageToken))
+                    {
+                        messageList = await _googleGmailService.GetCurrentUserMessagesAsync(
+                            _accessToken, filterQuery, new List<string>() { label.Id }, messageList.NextPageToken);
+
+                        allMessages.AddRange(messageList.Messages);
+                    }
                 }
-            }
 
-            List<GmailMessage> finalMessages = new List<GmailMessage>();
+                List<GmailMessage> finalMessages = new List<GmailMessage>();
 
-            object listLock = new object();
+                object listLock = new object();
 
-            await Parallel.ForEachAsync(allMessages, async (messageItem, cancellationToken) =>
-            {
-                GmailMessage fullMessage = await _googleGmailService.GetCurrentUserMessageAsync(
-                    _accessToken, messageItem.Id, Lib.Constants.GoogleGmailFormat.MessageFormat.Metadata);
-
-                lock (listLock)
+                await Parallel.ForEachAsync(allMessages, async (messageItem, cancellationToken) =>
                 {
-                    finalMessages.Add(fullMessage);
-                }
-            });
+                    GmailMessage fullMessage = await _googleGmailService.GetCurrentUserMessageAsync(
+                        _accessToken, messageItem.Id, Lib.Constants.GoogleGmailFormat.MessageFormat.Metadata);
 
-            chkMessages.Items.Clear();
+                    lock (listLock)
+                    {
+                        finalMessages.Add(fullMessage);
+                    }
+                });
 
-            chkMessages.Items.AddRange(finalMessages.OrderByDescending(m => m.InternalDate).ToArray());
+                chkMessages.Items.Clear();
 
-            grpMessages.Text = $"Messages ({finalMessages.Count})";
+                chkMessages.Items.AddRange(finalMessages.OrderByDescending(m => m.InternalDate).ToArray());
+
+                grpMessages.Text = $"Messages ({finalMessages.Count})";
+            }
+            catch (Exception ex)
+            {
+                chkMessages.Items.Clear();
+                grpMessages.Text = $"Messages (0)";
+                MessageBox.Show($"An error has occured!{Environment.NewLine}{ex.Message}", "An error has occured!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private async void btnGetAttachments_Click(object sender, EventArgs e)
@@ -228,42 +276,49 @@ namespace Gmail.Downloader
                 return;
             }
 
-            string path = Path.GetDirectoryName(sfd.FileName);
-
-            progressBar.Minimum = 0;
-            progressBar.Maximum = chkMessages.CheckedItems.Count;
-            progressBar.Value = 0;
-
-            int counter = 0;
-            foreach (object messageItem in chkMessages.CheckedItems)
+            try
             {
-                GmailMessage message = await _googleGmailService.GetCurrentUserMessageAsync(
-                    _accessToken, (messageItem as GmailMessage).Id, Lib.Constants.GoogleGmailFormat.MessageFormat.Full);
+                string path = Path.GetDirectoryName(sfd.FileName);
 
-                var attachments = message.Payload.Parts?.Where(p => !string.IsNullOrWhiteSpace(p.Body.AttachmentId))?.ToList() 
-                    ?? Enumerable.Empty<GmailMessagePart>();
+                progressBar.Minimum = 0;
+                progressBar.Maximum = chkMessages.CheckedItems.Count;
+                progressBar.Value = 0;
 
-                foreach (GmailMessagePart attachment in attachments)
+                int counter = 0;
+                foreach (object messageItem in chkMessages.CheckedItems)
                 {
-                    GmailMessagePartBody attachmentBody = await _googleGmailService.GetCurrentUserMessageAttachmentAsync(
-                        _accessToken, message.Id, attachment.Body.AttachmentId);
+                    GmailMessage message = await _googleGmailService.GetCurrentUserMessageAsync(
+                        _accessToken, (messageItem as GmailMessage).Id, Lib.Constants.GoogleGmailFormat.MessageFormat.Full);
 
-                    string datePrefix = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(message.InternalDate)).DateTime.ToString("yyyy-MM-dd_HH-mm_");
+                    var attachments = message.Payload.Parts?.Where(p => !string.IsNullOrWhiteSpace(p.Body.AttachmentId))?.ToList()
+                        ?? Enumerable.Empty<GmailMessagePart>();
 
-                    string finalFilename = Path.Combine(path, $"{datePrefix}{attachment.Filename.RemoveInvalidFileCharacters()}");
+                    foreach (GmailMessagePart attachment in attachments)
+                    {
+                        GmailMessagePartBody attachmentBody = await _googleGmailService.GetCurrentUserMessageAttachmentAsync(
+                            _accessToken, message.Id, attachment.Body.AttachmentId);
 
-                    UpdateStatusBar($"Downloading: '{attachment.Filename}'");
+                        string datePrefix = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(message.InternalDate)).DateTime.ToString("yyyy-MM-dd_HH-mm_");
 
-                    byte[] fileData = Base64Service.DecodeFromBase64Url(attachmentBody.Data);
+                        string finalFilename = Path.Combine(path, $"{datePrefix}{attachment.Filename.RemoveInvalidFileCharacters()}");
 
-                    await File.WriteAllBytesAsync(finalFilename, fileData);
+                        UpdateStatusBar($"Downloading: '{attachment.Filename}'");
+
+                        byte[] fileData = Base64Service.DecodeFromBase64Url(attachmentBody.Data);
+
+                        await File.WriteAllBytesAsync(finalFilename, fileData);
+                    }
+
+                    counter++;
+                    UpdateProgressBar(counter);
                 }
 
-                counter++;
-                UpdateProgressBar(counter);
+                MessageBox.Show($"All attachments ({counter}) were downloaded!", "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-
-            MessageBox.Show($"All attachments ({counter}) were downloaded!", "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error has occured!{Environment.NewLine}{ex.Message}", "An error has occured!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void UpdateProgressBar(int value)

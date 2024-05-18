@@ -43,6 +43,8 @@ namespace Gmail.Downloader.Lib.Repositories
 
             using HttpResponseMessage response = await _httpClient.SendAsync(httpRequestMessage);
 
+            response.EnsureSuccessStatusCode();
+
             return await response.Content.ReadAsStringAsync();
         }
 
@@ -63,6 +65,8 @@ namespace Gmail.Downloader.Lib.Repositories
 
             using HttpResponseMessage response = await _httpClient.SendAsync(httpRequestMessage);
 
+            response.EnsureSuccessStatusCode();
+
             return await response.Content.ReadAsStringAsync();
         }
 
@@ -82,6 +86,8 @@ namespace Gmail.Downloader.Lib.Repositories
             httpRequestMessage.Headers.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
 
             using HttpResponseMessage response = await _httpClient.SendAsync(httpRequestMessage);
+
+            response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadAsStringAsync();
         }
@@ -134,6 +140,8 @@ namespace Gmail.Downloader.Lib.Repositories
 
             using HttpResponseMessage response = await _httpClient.SendAsync(httpRequestMessage);
 
+            response.EnsureSuccessStatusCode();
+
             return await response.Content.ReadAsStringAsync();
         }
 
@@ -164,6 +172,8 @@ namespace Gmail.Downloader.Lib.Repositories
 
             using HttpResponseMessage response = await _httpClient.SendAsync(httpRequestMessage);
 
+            response.EnsureSuccessStatusCode();
+
             return await response.Content.ReadAsStringAsync();
         }
 
@@ -183,6 +193,8 @@ namespace Gmail.Downloader.Lib.Repositories
             httpRequestMessage.Headers.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
 
             using HttpResponseMessage response = await _httpClient.SendAsync(httpRequestMessage);
+
+            response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadAsStringAsync();
         }
