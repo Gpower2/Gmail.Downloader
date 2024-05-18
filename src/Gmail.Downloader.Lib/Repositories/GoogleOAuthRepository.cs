@@ -130,7 +130,7 @@ namespace Gmail.Downloader.Lib.Repositories
                 _logger.LogError($"Received request with invalid state ({incomingState})");
                 throw new Exception();
             }
-            _logger.LogInformation("Authorization code: " + code);
+            _logger.LogInformation($"Authorization code: {code}");
 
             // Starts the code exchange at the Token Endpoint.
             return await ExchangeCodeForTokensAsync(code, codeVerifier, redirectUri, clientId, clientSecret);
@@ -150,14 +150,14 @@ namespace Gmail.Downloader.Lib.Repositories
                 clientSecret
             );
 
-            HttpRequestMessage httpRequestMessage = new HttpRequestMessage();
+            using HttpRequestMessage httpRequestMessage = new HttpRequestMessage();
             httpRequestMessage.Method = HttpMethod.Post;
 
             httpRequestMessage.Headers.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
 
             httpRequestMessage.Content = new StringContent(tokenRequestBody, new MediaTypeHeaderValue("application/x-www-form-urlencoded"));
 
-            HttpResponseMessage response = await _httpClient.SendAsync(httpRequestMessage);
+            using HttpResponseMessage response = await _httpClient.SendAsync(httpRequestMessage);
 
             response.EnsureSuccessStatusCode();
 
