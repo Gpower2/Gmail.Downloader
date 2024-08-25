@@ -158,7 +158,7 @@ namespace Gmail.Downloader
 
                 object listLock = new object();
 
-                await Parallel.ForEachAsync(labelList.Labels, async (label, cancellationToken) =>
+                await Parallel.ForEachAsync(labelList.Labels, new ParallelOptions() { MaxDegreeOfParallelism = 100 }, async (label, cancellationToken) =>
                 {
                     GmailLabel finalLabel = await _googleGmailService.GetCurrentUserLabelAsync(_accessToken, label.Id);
 
