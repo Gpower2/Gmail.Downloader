@@ -12,7 +12,7 @@ using Gmail.Downloader.Lib.Models;
 using Gmail.Downloader.Lib.Repositories;
 using Gmail.Downloader.Lib.Services;
 using Gmail.Downloader.Lib.Services.Abstractions;
-using Microsoft.Extensions.Logging.Abstractions;
+using Gmail.Downloader.Logging;
 
 namespace Gmail.Downloader
 {
@@ -24,21 +24,20 @@ namespace Gmail.Downloader
         private GoogleClientSecret _clientSecret;
 
         private readonly GoogleOAuthRepository _googleOAuthRepository = new GoogleOAuthRepository(
-            new NullLogger<GoogleOAuthRepository>());
+            new SimpleConsoleLogger<GoogleOAuthRepository>());
 
         private readonly IGoogleUserService _googleUserService = new GoogleUserService(
-            new GoogleUserRepository(new NullLogger<GoogleUserRepository>()), 
-            new NullLogger<GoogleUserService>());
+            new GoogleUserRepository(new SimpleConsoleLogger<GoogleUserRepository>()),
+            new SimpleConsoleLogger<GoogleUserService>());
 
         private readonly IGoogleGmailService _googleGmailService = new GoogleGmailService(
-            new GoogleGmailRepository(new NullLogger<GoogleGmailRepository>()),
-            new NullLogger<GoogleGmailService>()
-        );
+            new GoogleGmailRepository(new SimpleConsoleLogger<GoogleGmailRepository>()),
+            new SimpleConsoleLogger<GoogleGmailService>());
 
         public FormMain()
         {
             InitializeComponent();
-
+          
             // Set form title 
             Text = string.Format("Gmail Downloader v{0} -- By Gpower2", Assembly.GetExecutingAssembly().GetName().Version);
 
@@ -158,7 +157,7 @@ namespace Gmail.Downloader
 
                 object listLock = new object();
 
-                await Parallel.ForEachAsync(labelList.Labels, new ParallelOptions() { MaxDegreeOfParallelism = 100 }, async (label, cancellationToken) =>
+                await Parallel.ForEachAsync(labelList.Labels, new ParallelOptions() { MaxDegreeOfParallelism = 50 }, async (label, cancellationToken) =>
                 {
                     GmailLabel finalLabel = await _googleGmailService.GetCurrentUserLabelAsync(_accessToken, label.Id);
 
@@ -249,14 +248,20 @@ namespace Gmail.Downloader
                     GmailMessageList messageList = await _googleGmailService.GetCurrentUserMessagesAsync(
                         _accessToken, filterQuery, new List<string>() { label.Id }, "");
 
-                    allMessages.AddRange(messageList.Messages);
+                    if (messageList?.Messages is not null)
+                    {
+                        allMessages.AddRange(messageList.Messages);
+                    }
 
                     while (!string.IsNullOrWhiteSpace(messageList.NextPageToken))
                     {
                         messageList = await _googleGmailService.GetCurrentUserMessagesAsync(
                             _accessToken, filterQuery, new List<string>() { label.Id }, messageList.NextPageToken);
 
-                        allMessages.AddRange(messageList.Messages);
+                        if (messageList?.Messages is not null)
+                        {
+                            allMessages.AddRange(messageList.Messages);
+                        }
                     }
                 }
 

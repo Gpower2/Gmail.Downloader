@@ -76,20 +76,32 @@ namespace Gmail.Downloader.Lib.Repositories
             // The special value `me` can be used to indicate the authenticated user
             const string path = "gmail/v1/users/me/labels/{id}";
 
-            using HttpRequestMessage httpRequestMessage = new HttpRequestMessage();
-            httpRequestMessage.Method = HttpMethod.Get;
+            while (true)
+            {
+                using HttpRequestMessage httpRequestMessage = new HttpRequestMessage();
+                httpRequestMessage.Method = HttpMethod.Get;
 
-            httpRequestMessage.RequestUri = new Uri(serviceEndpoint + "/" + path.Replace("{id}", labelId));
+                httpRequestMessage.RequestUri = new Uri(serviceEndpoint + "/" + path.Replace("{id}", labelId));
 
-            httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+                httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
-            httpRequestMessage.Headers.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+                httpRequestMessage.Headers.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
 
-            using HttpResponseMessage response = await _httpClient.SendAsync(httpRequestMessage);
+                using HttpResponseMessage response = await _httpClient.SendAsync(httpRequestMessage);
 
-            response.EnsureSuccessStatusCode();
+                _logger.LogDebug("Doing a request");
 
-            return await response.Content.ReadAsStringAsync();
+                if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+                {
+                    // If we get Too Many Requests, wait for 1 second before retrying again
+                    _logger.LogWarning("Got Too Many Requests, waiting for 1 sec...");
+                    await Task.Delay(TimeSpan.FromSeconds(1));
+                    continue;
+                }
+                response.EnsureSuccessStatusCode();
+
+                return await response.Content.ReadAsStringAsync();
+            }
         }
 
         public async Task<string> GetCurrentUserMessagesAsync(string accessToken, string query, List<string> labels, string pageToken)
