@@ -1,8 +1,8 @@
-# Gmail.Downloader
+# Gpower2 Gmail Downloader
 
 An open-source, secure Windows desktop application built with C# and the .NET framework designed to download, archive, and back up your Gmail history directly to your local machine.
 
-Unlike cloud-based backup utilities, **Gmail.Downloader** operates entirely client-side. Your emails, account credentials, and authentication tokens never leave your computer, ensuring complete privacy and control over your data.
+Unlike cloud-based backup utilities, **Gpower2 Gmail Downloader** operates entirely client-side. Your emails, account credentials, and authentication tokens never leave your computer, ensuring complete privacy and control over your data.
 
 ## 🚀 Features
 
@@ -28,7 +28,7 @@ To use this app, **you must generate your own free Google Cloud credentials**. I
 
 ### 1. Create a Google Cloud Project
 1. Go to the [Google Cloud Console](https://console.cloud.google.com/) and sign in with your Google account.
-2. Click the project dropdown in the top-left corner and click **New Project**. Name it `GmailDownloader` and click **Create**.
+2. Click the project dropdown in the top-left corner and click **New Project**. Name it `XXX Gmail Downloader` and click **Create**.
 
 ### 2. Enable the Gmail API
 1. In the left-side menu, navigate to **APIs & Services** > **Library**.
@@ -50,7 +50,7 @@ To use this app, **you must generate your own free Google Cloud credentials**. I
 
 ## 💻 How to Use
 
-1. Download the latest release of **Gmail.Downloader** from the [Releases](https://github.com/Gpower2/Gmail.Downloader/releases) section.
+1. Download the latest release of **Gpower2 Gmail Downloader** from the [Releases](https://github.com/Gpower2/Gmail.Downloader/releases) section.
 2. Place your generated `client_secret.json` file into the same directory as the `GmailDownloader.exe` executable.
 3. Launch `GmailDownloader.exe`.
 4. Click **Login / Authorize**. This will launch your default web browser.
@@ -61,7 +61,7 @@ To use this app, **you must generate your own free Google Cloud credentials**. I
 
 ## 🔒 Privacy, Security & Terms
 
-Gmail.Downloader adheres strictly to Google's Limited Use policy requirements. 
+# Gpower2 Gmail Downloader adheres strictly to Google's Limited Use policy requirements. 
 * The application only requests read access (`gmail.readonly`) required to perform data archiving.
 * Downloaded emails and OAuth tokens are stored exclusively on your local hard drive.
 * For a detailed legal breakdown, please review our [Privacy Policy](PRIVACY.md) and [Terms of Service](TERMS.md).
