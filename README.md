@@ -59,6 +59,21 @@ To use this app, **you must generate your own free Google Cloud credentials**. I
 
 ---
 
+## About the Application & Google OAuth Data Usage
+
+**Gpower2 Gmail Downloader** is an open-source desktop utility designed to let users securely download and archive their personal Gmail messages directly to their local storage.
+
+### Why the App Requests Google User Data
+To execute its core functionality, this application requires access to the following restricted Google OAuth scope:
+* **`gmail.readonly`**: This permission is exclusively used to read and download your email folders, messages, and structural data to your computer.
+
+### Data Privacy & Security (Limited Use)
+* **100% Local Execution:** The application runs completely on your local desktop. All fetched email contents, authentication tokens, and metadata are saved strictly on your local hardware.
+* **No External Transmission:** Your personal data is never transmitted, collected, stored, or processed on any remote servers or databases.
+* **No Third-Party Sharing:** We do not share, sell, or distribute your information to any third parties. The app's use of information received from Google APIs strictly adheres to the [Google API Services User Data Policy](https://developers.google.com/terms/api-services-user-data-policy), including its Limited Use requirements.
+
+---
+
 ## 🔒 Privacy, Security & Terms
 
 # Gpower2 Gmail Downloader adheres strictly to Google's Limited Use policy requirements. 
