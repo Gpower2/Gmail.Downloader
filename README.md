@@ -59,12 +59,12 @@ To use this app, **you must generate your own free Google Cloud credentials**. I
 
 ---
 
-## 🔒 Privacy & Security
+## 🔒 Privacy, Security & Terms
 
 Gmail.Downloader adheres strictly to Google's Limited Use policy requirements. 
 * The application only requests read access (`gmail.readonly`) required to perform data archiving.
 * Downloaded emails and OAuth tokens are stored exclusively on your local hard drive.
-* For a detailed legal breakdown, please review our [Privacy Policy](PRIVACY.md).
+* For a detailed legal breakdown, please review our [Privacy Policy](PRIVACY.md) and [Terms of Service](TERMS.md).
 
 ---
 
